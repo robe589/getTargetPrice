@@ -24,7 +24,7 @@ def main()
 	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
 		targetPriceList[i]=Hash.new
 		data.xpath('./td').each_with_index do |data,j|
-			text=removeToken(data.text)
+			text=removeToken(data.text,["\n","\r","\t"])
 			targetPriceList[i][head[j%6]]=text
 		end
 	end
@@ -64,13 +64,16 @@ def getHtmlData(url)
 	return doc
 end
 
-def removeToken(text)
-     while(text.index("\r")!=nil)do text.slice!("\r") end
-     while(text.index("\n")!=nil)do text.slice!("\n") end
-     while(text.index("\t")!=nil)do text.slice!("\t") end
-	 text.gsub!(/\u{00A0}/," ") #&nbsp;を削除
+#deleteSymbolArrayで指定した複数の文字をtextから削除
+#@params text 削除対象の文字列
+#@params deleteSymbolArray 削除したい文字の配列
+def removeToken(text,deleteSymbolArray=["\r","\n","\t"])
+	deleteSymbolArray.each do |symbol|
+		text.gsub!(symbol,"")
+	end
+	text.gsub!(/\u{00A0}/," ") #&nbsp;を削除
      
-	 return text
+	return text
 end
 
 main()
