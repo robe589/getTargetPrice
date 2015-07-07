@@ -13,21 +13,11 @@ def main()
 
 	html=getHtmlData(url)
 	
-	head=Array.new
-	targetPriceList=Array.new
 	
 	#表のヘッドを取得
-	html.xpath('//tr[@align="center" and @valign="middle"]/td').each_with_index do |data,i|
-		head[i]=data.text
-	end
-	
-	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
-		targetPriceList[i]=Hash.new
-		data.xpath('./td').each_with_index do |data,j|
-			text=removeToken(data.text,["\n","\r","\t"])
-			targetPriceList[i][head[j%6]]=text
-		end
-	end
+	head=getHeadToSite(html)
+	#表のデータ部分を取得
+	targetPriceList=getDataToSite(html,head)
 	pp head
 	pp targetPriceList
 
@@ -62,6 +52,36 @@ def getHtmlData(url)
 	#p doc.title
 
 	return doc
+end
+
+#表のヘッドを取得
+#@params html 表を取得するサイトのHTMLデータ
+#return 取得したヘッドの配列
+def getHeadToSite(html)
+	head=Array.new
+	#表のヘッドを取得
+	html.xpath('//tr[@align="center" and @valign="middle"]/td').each_with_index do |data,i|
+		head[i]=data.text
+	end
+
+	return head
+end
+
+#表のデータ部分を取得
+#@params html 表を取得するサイトのHTMLデータ
+#@params head 表のヘッド配列
+#@return 取得した表データ
+def getDataToSite(html,head)
+	targetPriceList=Array.new
+	#本日更新分のみ取得
+	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
+		targetPriceList[i]=Hash.new
+		data.xpath('./td').each_with_index do |data,j|
+			text=removeToken(data.text,["\n","\r","\t"])
+			targetPriceList[i][head[j%6]]=text
+		end
+	end
+	return targetPriceList
 end
 
 #deleteSymbolArrayで指定した複数の文字をtextから削除
