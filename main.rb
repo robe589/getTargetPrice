@@ -20,30 +20,17 @@ def main()
 	targetPriceList=getDataToSite(html,head)
 	pp head
 	pp targetPriceList
-
-	gmailSend=GmailSend.new($senderAddress,$gmailPassword)
-	html_body='<table border="1" rules="all">'+'<tr>'
-	head.each do |data|
-		html_body+='<td>'+data+'</td>'
-	end
-	html_body+='</tr>'
-	targetPriceList.each do |data|
-		html_body+='<tr>'
-		data.each do |key,data1|
-			html_body+='<td>'
-			html_body+=data1
-			html_body+='</td>'
-		end
-		html_body+='</tr>'
-	end
-	html_body+='</table>'
-
+	#gmailで送る表のHTMLソースを作成
+	html_body=makeHtmlSourceMatrix(head,targetPriceList)	
+	#gmailに組み込むhtmlソースを作成
 	text_html =Mail::Part.new do
 		content_type 'text/html; charset=UTF-8'
 		body html_body
 	end
+	#メールで送信
+	gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 	gmailSend.setHtmlPart text_html
-	gmailSend.sendMail('stockInfo589@gmail.com','目標株価',"a")
+	gmailSend.sendMail('stockInfo589@gmail.com','目標株価'," ")
 end
 
 def getHtmlData(url)	
@@ -82,6 +69,32 @@ def getDataToSite(html,head)
 		end
 	end
 	return targetPriceList
+end
+
+#HTMLの表を作成
+#@params html 表を取得するサイトのHTMLデータ
+#@params list 表のデータ配列
+#@return 作成したHTMLソース
+def makeHtmlSourceMatrix(head,list)
+	htmlSource=String.new
+
+	htmlSource+='<table border="1" rules="all">'+'<tr>'
+	#表のヘッドを作成
+	head.each do |data|
+		htmlSource+='<td>'+data+'</td>'
+	end
+	#表のデータ部分を作成
+	htmlSource+='</tr>'
+	list.each do |data|
+		htmlSource+='<tr>'
+		data.each do |key,data1|
+			htmlSource+='<td>'
+			htmlSource+=data1
+			htmlSource+='</td>'
+		end
+		htmlSource+='</tr>'
+	end
+	htmlSource+='</table>'
 end
 
 #deleteSymbolArrayで指定した複数の文字をtextから削除
