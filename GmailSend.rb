@@ -2,10 +2,9 @@
 require 'bundler'
 Bundler.require
 
-#require './account.rb'
+require './myid.rb'
 
 class GmailSend
-	attr_reader :mail
 	def initialize(address,password)
 		@mail = Mail.new
 		@options = {:address=> "smtp.gmail.com",
@@ -17,6 +16,10 @@ class GmailSend
 					 :enable_starttls_auto => true  }
 		@mail.charset='utf-8'
 		@mail.from address
+	end
+
+	def setHtmlPart(html)
+		@mail.html_part=html
 	end
 
 	def sendMail(sendAddress,subject,body)
