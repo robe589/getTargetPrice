@@ -52,7 +52,7 @@ def main()
 		content_type 'text/html; charset=UTF-8'
 		body html_body
 	end
-	gmailSend.mail.html_part=text_html
+	gmailSend.setHtmlPart text_html
 	gmailSend.sendMail('stockInfo589@gmail.com','目標株価',"a")
 end
 
