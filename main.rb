@@ -20,6 +20,13 @@ def main()
 	targetPriceList=getDataToSite(html,head)
 	pp head
 	pp targetPriceList
+	#本日の更新分がないとき
+	if targetPriceList==nil 
+		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
+		text="本日更新のレーティング情報はありません\n"
+		gmailSend.sendMail('stockInfo589@gmail.com','目標株価',text)
+		return -1
+	end
 	#gmailで送る表のHTMLソースを作成
 	html_body=makeHtmlSourceMatrix(head,targetPriceList)	
 	#gmailに組み込むhtmlソースを作成
@@ -60,11 +67,16 @@ end
 #@return 取得した表データ
 def getDataToSite(html,head)
 	targetPriceList=Array.new
+	today=Time.now.strftime("%-m/%-d")
 	#本日更新分のみ取得
 	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
 		targetPriceList[i]=Hash.new
 		data.xpath('./td').each_with_index do |data,j|
 			text=removeToken(data.text,["\n","\r","\t"])
+			#本日分のもののみ格納
+			if head[j%6]=='日付' and today !=text
+				return nil
+			end
 			targetPriceList[i][head[j%6]]=text
 		end
 	end
