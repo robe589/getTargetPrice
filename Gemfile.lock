@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    jpstock (0.6.7)
+      nokogiri
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.1)
@@ -12,6 +14,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  jpstock
   mail
   nokogiri
 

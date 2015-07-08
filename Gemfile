@@ -5,3 +5,4 @@ source "https://rubygems.org"
 gem 'mail'
 gem 'nokogiri'
 gem 'mail'
+gem 'jpstock'
