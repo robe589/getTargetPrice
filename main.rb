@@ -18,6 +18,8 @@ def main()
 	head=getHeadToSite(html)
 	#表のデータ部分を取得
 	targetPriceList=getDataToSite(html,head)
+	#表に現在の株価を追加
+	insertNowPrice(head,targetPriceList)
 	pp head
 	pp targetPriceList
 	#本日の更新分がないとき
@@ -57,7 +59,7 @@ def getHeadToSite(html)
 	html.xpath('//tr[@align="center" and @valign="middle"]/td').each_with_index do |data,i|
 		head[i]=data.text
 	end
-
+	head[5]='目標株価'
 	return head
 end
 
@@ -81,6 +83,25 @@ def getDataToSite(html,head)
 		end
 	end
 	return targetPriceList
+end
+
+#現在の株価をリストに追加
+#@params head 表のヘッド配列
+#@params targetPriceList 表のデータ配列
+def insertNowPrice(head,targetPriceList)
+	codeList=Array.new
+	targetPriceList.each do |data|
+		codeList.push data['コード']
+	end
+	pp codeList
+	
+	priceList=JpStock.price(:code=>codeList)
+	pp priceList
+	
+	head.push "現在株価"
+	priceList.each_with_index do |price,i|
+		targetPriceList[i]["現在株価"]=price.close.to_s
+	end
 end
 
 #HTMLの表を作成
