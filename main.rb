@@ -102,7 +102,7 @@ def insertNowPrice(head,targetPriceList)
 	end
 end
 
-uHTMLの表を作成
+#HTMLの表を作成
 #@params html 表を取得するサイトのHTMLデータ
 #@params list 表のデータ配列
 #@return 作成したHTMLソース
