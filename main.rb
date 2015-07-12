@@ -68,7 +68,6 @@ end
 def getDataToSite(html,head)
 	targetPriceList=Array.new
 	today=Time.now.strftime("%-m/%-d")
-	today='7/10'
 	#本日更新分のみ取得
 	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
 		targetPriceList[i]=Hash.new
