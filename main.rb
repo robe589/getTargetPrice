@@ -31,7 +31,7 @@ def main()
 	#gmailで送る表のHTMLソースを作成
 	html_body=makeHtmlSourceMatrix(head,targetPriceList)	
 	#gmailに組み込むhtmlソースを作成
-	uext_html =Mail::Part.new do
+	text_html =Mail::Part.new do
 		content_type 'text/html; charset=UTF-8'
 		body html_body
 	end
@@ -68,6 +68,7 @@ end
 def getDataToSite(html,head)
 	targetPriceList=Array.new
 	today=Time.now.strftime("%-m/%-d")
+	today='7/10'
 	#本日更新分のみ取得
 	html.xpath('//tr[@align="center" and @bgcolor]').each_with_index do |data,i|
 		targetPriceList[i]=Hash.new
