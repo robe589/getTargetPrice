@@ -18,8 +18,6 @@ def main()
 	head=getHeadToSite(html)
 	#表のデータ部分を取得
 	targetPriceList=getDataToSite(html,head)
-	#表に現在の株価を追加
-	insertNowPrice(head,targetPriceList)
 	pp head
 	pp targetPriceList
 	#本日の更新分がないとき
@@ -28,6 +26,8 @@ def main()
 		gmailSend.sendMail('stockInfo589@gmail.com','目標株価',text)
 		return -1
 	end
+	#表に現在の株価を追加
+	insertNowPrice(head,targetPriceList)
 	#gmailで送る表のHTMLソースを作成
 	html_body=makeHtmlSourceMatrix(head,targetPriceList)	
 	#gmailに組み込むhtmlソースを作成
