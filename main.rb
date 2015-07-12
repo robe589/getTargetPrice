@@ -10,10 +10,10 @@ require './myid'
 
 def main()
 	url='https://www.grail-legends.com/rate/rate_index.html'
+	gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 
+	#サイトからソースを取得
 	html=getHtmlData(url)
-	
-	
 	#表のヘッドを取得
 	head=getHeadToSite(html)
 	#表のデータ部分を取得
@@ -24,7 +24,6 @@ def main()
 	pp targetPriceList
 	#本日の更新分がないとき
 	if targetPriceList==nil 
-		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 		text="本日更新のレーティング情報はありません\n"
 		gmailSend.sendMail('stockInfo589@gmail.com','目標株価',text)
 		return -1
@@ -32,12 +31,11 @@ def main()
 	#gmailで送る表のHTMLソースを作成
 	html_body=makeHtmlSourceMatrix(head,targetPriceList)	
 	#gmailに組み込むhtmlソースを作成
-	text_html =Mail::Part.new do
+	uext_html =Mail::Part.new do
 		content_type 'text/html; charset=UTF-8'
 		body html_body
 	end
 	#メールで送信
-	gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 	gmailSend.setHtmlPart text_html
 	gmailSend.sendMail('stockInfo589@gmail.com','目標株価'," ")
 end
@@ -104,7 +102,7 @@ def insertNowPrice(head,targetPriceList)
 	end
 end
 
-#HTMLの表を作成
+uHTMLの表を作成
 #@params html 表を取得するサイトのHTMLデータ
 #@params list 表のデータ配列
 #@return 作成したHTMLソース
